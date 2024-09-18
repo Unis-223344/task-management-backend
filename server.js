@@ -54,7 +54,7 @@ app.post("/employee-emails", async (request,response) =>{
         const { email, passWord } = request.body;
         const employeeData = {
             employeEmail: email,
-            employeePassWord:  passWord
+            employeePassWord:  passWord,
         }
         const postData = await employeeDatabase.insertOne(employeeData)
         response.status(201).json(postData)
@@ -64,13 +64,42 @@ app.post("/employee-emails", async (request,response) =>{
     }
 })
 
+app.post("/employee-emails-data", async (request,response) =>{
+    try {
+        const insertManyData = await employeeDatabase.insertMany(employeesLoginCred)
+        response.status(201).json(insertManyData)
+    } catch (e) {
+        console.log(`Error at post superAdmins : ${e.message}`)
+    }
+})
+
+const additionalData = dataBase.collection("Employees Additional Data")
+
+app.post("/employeeDataAdd", async (request,response) =>{
+    try {
+        const insertManyData = await additionalData.insertMany(data)
+        response.status(201).json(insertManyData)
+    } catch (e) {
+        console.log(`Error at post employeeDataAdd : ${e.message}`)
+    }
+})
+
+app.get("/employeeDataAdd", async (request,response) =>{
+    try {
+        const findData = await additionalData.find().toArray()
+        response.status(200).json(findData)
+    } catch (e) {
+        console.log(`Error at get employeeDataAdd : ${e.message}`)
+    }
+})
+
 app.post("/employeesLoginPost", async (request,response) =>{
     try {
         const {gmail, employeePassWord} = request.body
         const employeesData = await employeeDatabase.find().toArray();
         let userCheck;
         for (let char of employeesData){
-            if (char.employeEmail === gmail && char.employeePassWord === employeePassWord){
+            if (char.email === gmail && char.passWord === employeePassWord){
                 userCheck = "User Successfully loged"
             }
         }
