@@ -1,0 +1,38 @@
+POST http://localhost:4000/employee-emails
+Content-Type: application/json
+ 
+{
+    "email":"ks00700145@unistechnosoft.com",
+    "passWord":"Sravanthi@1236"
+}
+
+###
+POST http://localhost:4000/employeesLoginPost
+Content-Type: application/json
+Accept: application/json
+ 
+{
+    "gmail":"lg00700049@unistechnosoft.com",
+    "employeePassWord":"Ganga@123"
+}
+
+###
+POST http://localhost:4000/taskPost
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llRW1haWwiOiJsZzAwNzAwMDQ5QHVuaXN0ZWNobm9zb2Z0LmNvbSIsImlhdCI6MTcyNjYwMjYyOH0.6kFvGE8AcPUlKrEIioagYWZpY9A6uPfxhjaNrOheR1s
+Content-Type: application/json
+Accept: application/json
+ 
+{           
+    "selectedDomain1":"Backend",
+    "taskNumber1":"002",
+    "taskPara1":"Login Form With email and password",
+    "pdfFile1":"afsdfsadfsadfsadfasdfasdff",
+    "assignedTime1": "",
+    "workCompleteDt1":"",
+    "employeeComment1":"",
+    "managerComment1":""
+}
+
+###
+GET http://localhost:4000/tasksData
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBsb3llRW1haWwiOiJsZzAwNzAwMDQ5QHVuaXN0ZWNobm9zb2Z0LmNvbSIsImlhdCI6MTcyNjYwMjYyOH0.6kFvGE8AcPUlKrEIioagYWZpY9A6uPfxhjaNrOheR1s
