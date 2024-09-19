@@ -74,7 +74,6 @@ app.post("/employee-emails-data", async (request,response) =>{
 })
 
 const additionalData = dataBase.collection("Employees Additional Data")
-
 app.post("/employeeDataAdd", async (request,response) =>{
     try {
         const insertManyData = await additionalData.insertMany(data)
@@ -117,27 +116,32 @@ app.post("/employeesLoginPost", async (request,response) =>{
     }
 })
 
-const taskDataBase = dataBase.collection("Task Database")
-app.post("/taskPost", authenticateToken, async (request,response)=>{
+const taskDataBase = dataBase.collection("Task Assign Database")
+app.post("/taskAssignPost", async (request,response)=>{
     try {
-        const { selectedDomain1,
-            taskNumber1,
-            taskPara1,
+        const { taskNumber1,
+            employeeId1,
+            taskDiscription1,
             pdfFile1,
-            assignedTime1,
-            workCompleteDt1,
+            taskCreateTime1,
+            taskAssignedTime1,
+            assignedStatus1,
+            completeDateTime1,
+            completeStatus1,
             employeeComment1,
-            managerComment1 } = request.body
+            managerComment1} = request.body
         const postTask = {
-            selectedDomain: selectedDomain1,
-            taskNumber: taskNumber1,
-            taskPara: taskPara1,
-            pdfFile: pdfFile1,
-            createTime: new Date().toLocaleString(),
-            assignedTime: assignedTime1,
-            workCompleteDt: workCompleteDt1,
-            employeeComment: employeeComment1,
-            managerComment: managerComment1,
+            taskNumber:taskNumber1,
+            employeeId:employeeId1,
+            taskDiscription:taskDiscription1,
+            pdfFile:pdfFile1,
+            taskCreateTime:taskCreateTime1,
+            taskAssignedTime:taskAssignedTime1,
+            assignedStatus:assignedStatus1,
+            completeDateTime:completeDateTime1,
+            completeStatus:completeStatus1,
+            employeeComment:employeeComment1,
+            managerComment:managerComment1
         }
 
         const postData = await taskDataBase.insertOne(postTask)
@@ -148,7 +152,8 @@ app.post("/taskPost", authenticateToken, async (request,response)=>{
     }
 } )
 
-app.get('/tasksData', authenticateToken, async (request, response) => {
+
+app.get('/tasksData', async (request, response) => {
     try {
         const allTasks = await taskDataBase.find().toArray()
         response.send(allTasks)
