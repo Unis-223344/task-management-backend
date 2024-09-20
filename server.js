@@ -4,6 +4,7 @@ const {MongoClient} = require('mongodb');
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const jwt = require("jsonwebtoken")
+const { v4: uuidv4 } = require('uuid');
 
 app.use(express.json());
 app.use(bodyParser.json())
@@ -131,7 +132,7 @@ app.post("/taskAssignPost", async (request,response)=>{
             employeeComment1,
             managerComment1} = request.body
         const postTask = {
-            taskNumber:taskNumber1,
+            taskNumber: uuidv4(),
             employeeId:employeeId1,
             taskDiscription:taskDiscription1,
             pdfFile:pdfFile1,
@@ -153,13 +154,22 @@ app.post("/taskAssignPost", async (request,response)=>{
 } )
 
 
-app.get('/tasksData', async (request, response) => {
+app.post('/tasksData', async (request, response) => {
     try {
-        const allTasks = await taskDataBase.find().toArray()
-        response.send(allTasks)
+        const allTasks = await taskDataBase.find({employeeId:request.body.empId}).toArray()
+        response.status(201).json(allTasks)
     } catch (error) {
         response.status(500).send({ message: error.message })
     }
 })
 
+
+app.get('/getAllTasks', async (request, response) =>{
+    try {
+        const employeeTaskData = await taskDataBase.find().toArray()
+        response.status(201).json(employeeTaskData)
+    } catch (e) {
+        console.log(`Error getting employee tasks ${e.message}`)
+    }
+})
 

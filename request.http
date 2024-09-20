@@ -47,4 +47,12 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:4000/tasksData
+POST  http://localhost:4000/tasksData
+Content-Type: application/json
+
+{
+    "empId":"lg00700049"
+}
+
+###
+GET http://localhost:4000/getAllTasks
