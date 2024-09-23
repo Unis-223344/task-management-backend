@@ -56,3 +56,51 @@ Content-Type: application/json
 
 ###
 GET http://localhost:4000/getAllTasks
+
+###
+PUT http://localhost:4000/updateTaskAssigned
+Content-Type: application/json
+
+{
+    "taskNum":"bf1b86ae-7e6f-4bf0-a8f5-a78d6ad30016",
+    "taskAssignedTime3":"3 pm",
+    "assignedStatus3":"successfully assinged"
+
+}
+
+###
+PUT http://localhost:4000/updateTaskAssigned2
+Content-Type: application/json
+
+{
+    "taskNum":"96ba31c4-dc4a-4da0-99d5-40311883ca40",
+    "taskDiscription1":"Create Inventory Table Document",
+    "pdfFile1":"pdfFile 888888",
+     "managerComment1":"Create and attach the doc to outlook"
+}
+
+###
+DELETE http://localhost:4000/oneTaskDelete
+Content-Type: application/json
+
+{
+    "taskNum":"d0806cb4-bd41-424e-9895-644ff43d5d0d"
+}
+
+###
+POST http://localhost:4000/EmployeeDetails
+Content-Type: application/json
+
+{
+    "email":"nr00700036@unistechnosoft.com"
+}
+
+###
+PUT http://localhost:4000/EmployeeDetailsUpdate
+Content-Type: application/json
+
+{
+    "email":"NS00700109@unistechnosoft.com",
+    "mobileNumber1": "7702441016",
+    "skillSet2": "React Native"
+}

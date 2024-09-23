@@ -110,7 +110,7 @@ app.post("/employeesLoginPost", async (request,response) =>{
             const payload = {employeEmail:gmail}
             const jwtToken = jwt.sign(payload,"TaskSecretToken")
             response.status(200)
-            response.send({jwtToken})
+            response.send({jwtToken,gmail})
         }
     } catch (e) {
         console.log(`Error at post superAdmins Login : ${e.message}`)
@@ -136,7 +136,7 @@ app.post("/taskAssignPost", async (request,response)=>{
             employeeId:employeeId1,
             taskDiscription:taskDiscription1,
             pdfFile:pdfFile1,
-            taskCreateTime:taskCreateTime1,
+            taskCreateTime:new Date().toLocaleString(),
             taskAssignedTime:taskAssignedTime1,
             assignedStatus:assignedStatus1,
             completeDateTime:completeDateTime1,
@@ -173,3 +173,80 @@ app.get('/getAllTasks', async (request, response) =>{
     }
 })
 
+
+
+app.put("/updateTaskAssigned", async (request, response) => {
+    try {
+        const {taskNum, taskAssignedTime3, assignedStatus3} = request.body 
+        const updateTask = await taskDataBase.updateOne(
+            {taskNumber: taskNum},
+            {
+                $set: {           
+                    taskAssignedTime: taskAssignedTime3,
+                    assignedStatus: assignedStatus3
+                }
+            })
+            response.status(201).json(updateTask)
+        
+    } catch (error) {
+        response.json({ message: "Error updating task" })
+    }
+})
+
+
+app.put("/updateTaskAssigned2", async (request,response)=>{
+    try {
+        const {taskNum, taskDiscription1, pdfFile1, managerComment1} = request.body
+        const updateOneTaskEmp = await taskDataBase.updateOne(
+            {taskNumber: taskNum},
+            {
+                $set: {                
+                    taskDiscription: taskDiscription1,             
+                    pdfFile: pdfFile1,
+                    managerComment:managerComment1,
+                }
+            })
+            response.status(201).json(updateOneTaskEmp)
+    } catch (e) {
+        console.log(`Error updating task ${e.message}`)
+    }
+})
+
+
+app.delete("/oneTaskDelete", async (request,response) =>{
+    try {
+        const { taskNum} = request.body
+        const deleteResponse = await taskDataBase.deleteOne({taskNumber:taskNum})
+        response.status(201).json(deleteResponse)
+    } catch (e) {
+        console.log(`Error at Deleting Task ${e.message}`)
+    }
+})
+
+
+app.post("/EmployeeDetails", async (request,response) =>{
+    try {
+        const {email} =  request.body
+        const employeeDetails = await additionalData.findOne({gmailId:email})
+        response.status(201).json(employeeDetails)
+    } catch (e) {
+        console.log(`Error at getting employee details ${e.message}`)
+    }
+})
+
+app.put("/EmployeeDetailsUpdate", async (request,response) =>{
+    try {
+        const {email, mobileNumber1, skillSet2} = request.body
+        const updateEmployeeDetails = await additionalData.updateOne(
+            {gmailId: email},
+            {
+                $set: {                      
+                    mobileNumber:mobileNumber1,
+                    skillSet:skillSet2
+                }
+            })
+            response.status(201).json(updateEmployeeDetails)
+    } catch (e) {
+        console.log(`Error updating employee details ${e.message}`)
+    }
+})
