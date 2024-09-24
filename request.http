@@ -123,3 +123,21 @@ Content-Type: application/json
     "status2":"Completed",
     "empComment2":"Getting some error but we resolved it"
 }
+
+###
+POST http://localhost:4000/superAdminCredential
+Content-Type: application/json
+
+{
+    "name":"Ganga",
+    "passWord2":"ganga7702"
+}
+
+###
+POST http://localhost:4000/superAdminLogin
+Content-Type: application/json
+
+{
+    "name":"Ganga",
+    "passWord2":"ganga7702"
+}

@@ -5,10 +5,28 @@ const bodyParser = require("body-parser")
 const cors = require("cors")
 const jwt = require("jsonwebtoken")
 const { v4: uuidv4 } = require('uuid');
+const multer = require('multer');
+const path = require('path');
 
 app.use(express.json());
 app.use(bodyParser.json())
 app.use(cors())
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "./files");
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now();
+      cb(null, uniqueSuffix + file.originalname);
+    },
+  });
+
+  const upload = multer({ storage: storage });
+
+
+
+
  
 const uri ="mongodb+srv://gangadharalothula7702:UnisTask123@task.1ryzd.mongodb.net/"
 const client = new MongoClient(uri);
@@ -118,7 +136,7 @@ app.post("/employeesLoginPost", async (request,response) =>{
 })
 
 const taskDataBase = dataBase.collection("Task Assign Database")
-app.post("/taskAssignPost", async (request,response)=>{
+app.post("/taskAssignPost",  async (request,response)=>{
     try {
         const { taskNumber1,
             employeeId1,
@@ -277,3 +295,48 @@ app.put("/updateCreateStatus", async (request,response) =>{
         console.log(`Error at updating employee workstatus : ${e.message}`)
     }
 })
+
+const adminDatabase = dataBase.collection("Admin Login Credentials")
+
+app.post("/superAdminCredential", async (request,response) =>{
+    try {
+        const { name, passWord2 } = request.body;
+        const adminData = {
+            userName: name,
+            adminPassWord:  passWord2,
+        }
+        const postAdminData = await adminDatabase.insertOne(adminData)
+        response.status(201).json(postAdminData)
+        
+    } catch (e) {
+        console.log(`Error at post superAdmins credentials : ${e.message}`)
+    }
+})
+
+
+
+
+
+app.post("/superAdminLogin", async (request,response) =>{
+    try {
+        const {name, passWord2} = request.body
+        const adminsLoginData = await adminDatabase.find().toArray();
+        let adminCheck;
+        for (let char of adminsLoginData){
+            if (char.userName === name && char.adminPassWord === passWord2){
+                adminCheck = "Admin Successfully loged"
+            }
+        }
+        if (adminCheck === undefined){
+            response.status(400)
+            response.send("U R username and password is incorrect")
+        }else{
+            const payload = {userName:name}
+            const jwtToken = jwt.sign(payload,"AdminSecretToken")
+            response.status(200)
+            response.send({jwtToken,name})
+        }
+    } catch (e) {
+        console.log(`Error at super admin login : ${e.message}`)
+    }
+});
