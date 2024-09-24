@@ -250,3 +250,30 @@ app.put("/EmployeeDetailsUpdate", async (request,response) =>{
         console.log(`Error updating employee details ${e.message}`)
     }
 })
+
+
+app.post("/getEmployeeAllTasks", async (request,response) =>{
+    try {
+        const {emplId} = request.body
+        const employeeAllTasks = await taskDataBase.find({employeeId:emplId}).toArray()
+        response.status(201).json(employeeAllTasks)
+    } catch (e) {
+        console.log(`Error at getting employee all tasks ${e.message}`)
+    }
+})
+
+
+app.put("/updateCreateStatus", async (request,response) =>{
+    try {
+        const {taskId2, completedTime2, status2, empComment2} = request.body
+        const updateTaskCompleteStatus = await taskDataBase.updateOne(
+            {taskNumber: taskId2}, 
+            {$set: {completeDateTime: completedTime2, 
+                completeStatus: status2, 
+                employeeComment: empComment2}
+            })
+        response.status(201).json(updateTaskCompleteStatus)
+    } catch (e) {
+        console.log(`Error at updating employee workstatus : ${e.message}`)
+    }
+})

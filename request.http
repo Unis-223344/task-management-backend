@@ -104,3 +104,22 @@ Content-Type: application/json
     "mobileNumber1": "7702441016",
     "skillSet2": "React Native"
 }
+
+###
+POST http://localhost:4000/getEmployeeAllTasks
+Content-Type: application/json
+
+{
+    "emplId":"lg00700049"
+}
+
+###
+PUT http://localhost:4000/updateCreateStatus
+Content-Type: application/json
+
+{
+    "taskId2":"e174d9ff-28f1-45d4-baf5-3a65b117bded",
+    "completedTime2":"2 pm",
+    "status2":"Completed",
+    "empComment2":"Getting some error but we resolved it"
+}
