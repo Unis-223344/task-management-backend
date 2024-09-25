@@ -12,21 +12,6 @@ app.use(express.json());
 app.use(bodyParser.json())
 app.use(cors())
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, "./files");
-    },
-    filename: function (req, file, cb) {
-      const uniqueSuffix = Date.now();
-      cb(null, uniqueSuffix + file.originalname);
-    },
-  });
-
-  const upload = multer({ storage: storage });
-
-
-
-
  
 const uri ="mongodb+srv://gangadharalothula7702:UnisTask123@task.1ryzd.mongodb.net/"
 const client = new MongoClient(uri);
@@ -35,7 +20,7 @@ const serverDb = async ()=>{
     try{
         await client.connect();
         app.listen(4000, ()=>{
-            console.log("Server Runing at PORT:4000 and DB connected");
+            console.log("Server Runing at PORT:4001 and DB connected");
         })
     }catch(e){
         console.log(`error in intialization of server and mongodb ${e.message}`)
@@ -122,8 +107,7 @@ app.post("/employeesLoginPost", async (request,response) =>{
             }
         }
         if (userCheck === undefined){
-            response.status(400)
-            response.send("U R username and password is incorrect")
+            response.status(400).json("Incorrect Credentials")
         }else{
             const payload = {employeEmail:gmail}
             const jwtToken = jwt.sign(payload,"TaskSecretToken")
@@ -328,8 +312,7 @@ app.post("/superAdminLogin", async (request,response) =>{
             }
         }
         if (adminCheck === undefined){
-            response.status(400)
-            response.send("U R username and password is incorrect")
+            response.status(400).json("U R username and password is incorrect")
         }else{
             const payload = {userName:name}
             const jwtToken = jwt.sign(payload,"AdminSecretToken")
