@@ -138,7 +138,7 @@ app.post("/taskAssignPost",  async (request,response)=>{
             employeeId:employeeId1,
             taskDiscription:taskDiscription1,
             pdfFile:pdfFile1,
-            taskCreateTime:new Date().toLocaleString(),
+            taskCreateTime:taskCreateTime1,
             taskAssignedTime:taskAssignedTime1,
             assignedStatus:assignedStatus1,
             completeDateTime:completeDateTime1,
