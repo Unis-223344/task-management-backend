@@ -148,7 +148,8 @@ app.post("/taskAssignPost",  async (request,response)=>{
         }
 
         const postData = await taskDataBase.insertOne(postTask)
-        response.status(201).json(postData)
+        const getTask = await taskDataBase.findOne({_id : postData.insertedId})
+        response.status(201).json(getTask)
         
     } catch (e) {
         console.log(`Error at post tasks : ${e.message}`)
