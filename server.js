@@ -148,7 +148,7 @@ app.post("/taskAssignPost",  async (request,response)=>{
         }
 
         const postData = await taskDataBase.insertOne(postTask)
-        const getTask = await taskDataBase.findOne({_id : postData.insertedId})
+        const getTask = await taskDataBase.find({employeeId:employeeId1}).toArray()
         response.status(201).json(getTask)
         
     } catch (e) {
@@ -180,7 +180,7 @@ app.get('/getAllTasks', async (request, response) =>{
 
 app.put("/updateTaskAssigned", async (request, response) => {
     try {
-        const {taskNum, taskAssignedTime3, assignedStatus3} = request.body 
+        const {idNum,taskNum, taskAssignedTime3, assignedStatus3} = request.body 
         const updateTask = await taskDataBase.updateOne(
             {taskNumber: taskNum},
             {
@@ -189,7 +189,8 @@ app.put("/updateTaskAssigned", async (request, response) => {
                     assignedStatus: assignedStatus3
                 }
             })
-            response.status(201).json(updateTask)
+        const getTask = await taskDataBase.find({employeeId:idNum}).toArray()
+        response.status(201).json(getTask)
         
     } catch (error) {
         response.json({ message: "Error updating task" })
@@ -199,7 +200,7 @@ app.put("/updateTaskAssigned", async (request, response) => {
 
 app.put("/updateTaskAssigned2", async (request,response)=>{
     try {
-        const {taskNum, taskDiscription1, pdfFile1, managerComment1} = request.body
+        const {idNum,taskNum, taskDiscription1, pdfFile1, managerComment1} = request.body
         const updateOneTaskEmp = await taskDataBase.updateOne(
             {taskNumber: taskNum},
             {
@@ -209,7 +210,8 @@ app.put("/updateTaskAssigned2", async (request,response)=>{
                     managerComment:managerComment1,
                 }
             })
-            response.status(201).json(updateOneTaskEmp)
+        const getTask = await taskDataBase.find({employeeId:idNum}).toArray()
+        response.status(201).json(getTask)
     } catch (e) {
         console.log(`Error updating task ${e.message}`)
     }
@@ -218,9 +220,10 @@ app.put("/updateTaskAssigned2", async (request,response)=>{
 
 app.delete("/oneTaskDelete", async (request,response) =>{
     try {
-        const { taskNum} = request.body
+        const {idNum, taskNum} = request.body
         const deleteResponse = await taskDataBase.deleteOne({taskNumber:taskNum})
-        response.status(201).json(deleteResponse)
+        const getTask = await taskDataBase.find({employeeId:idNum}).toArray()
+        response.status(201).json(getTask)
     } catch (e) {
         console.log(`Error at Deleting Task ${e.message}`)
     }
@@ -268,14 +271,15 @@ app.post("/getEmployeeAllTasks", async (request,response) =>{
 
 app.put("/updateCreateStatus", async (request,response) =>{
     try {
-        const {taskId2, completedTime2, status2, empComment2} = request.body
+        const {idNum,taskId2, completedTime2, status2, empComment2} = request.body
         const updateTaskCompleteStatus = await taskDataBase.updateOne(
             {taskNumber: taskId2}, 
             {$set: {completeDateTime: completedTime2, 
                 completeStatus: status2, 
                 employeeComment: empComment2}
             })
-        response.status(201).json(updateTaskCompleteStatus)
+        const getTask = await taskDataBase.find({employeeId:idNum}).toArray()
+        response.status(201).json(getTask)
     } catch (e) {
         console.log(`Error at updating employee workstatus : ${e.message}`)
     }
