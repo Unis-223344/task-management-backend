@@ -123,6 +123,8 @@ const taskDataBase = dataBase.collection("Task Assign Database")
 app.post("/taskAssignPost",  async (request,response)=>{
     try {
         const { taskNumber1,
+            employeeName1,
+            role1,
             employeeId1,
             taskDiscription1,
             pdfFile1,
@@ -135,6 +137,8 @@ app.post("/taskAssignPost",  async (request,response)=>{
             managerComment1} = request.body
         const postTask = {
             taskNumber: uuidv4(),
+            employeeName:employeeName1,
+            roleDesgnation:role1,
             employeeId:employeeId1,
             taskDiscription:taskDiscription1,
             pdfFile:pdfFile1,
@@ -272,7 +276,7 @@ app.post("/getEmployeeAllTasks", async (request,response) =>{
 app.put("/updateCreateStatus", async (request,response) =>{
     try {
         const {idNum,taskId2, completedTime2, status2, empComment2} = request.body
-        const updateTaskCompleteStatus = await taskDataBase.updateOne(
+        await taskDataBase.updateOne(
             {taskNumber: taskId2}, 
             {$set: {completeDateTime: completedTime2, 
                 completeStatus: status2, 
@@ -328,3 +332,15 @@ app.post("/superAdminLogin", async (request,response) =>{
         console.log(`Error at super admin login : ${e.message}`)
     }
 });
+
+app.post("/getOneTask", async (request,response) =>{
+    try {
+        const {taskNum4} = request.body
+        const getOneTask = await taskDataBase.findOne({
+            taskNumber:taskNum4
+        })
+        response.status(201).json(getOneTask)
+    } catch (e) {
+        console.log(`Error at getting task based on task num : ${e.message}`)
+    }
+})
