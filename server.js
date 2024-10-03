@@ -246,13 +246,12 @@ app.post("/EmployeeDetails", async (request,response) =>{
 
 app.put("/EmployeeDetailsUpdate", async (request,response) =>{
     try {
-        const {email, mobileNumber1, skillSet2} = request.body
+        const {email, mobileNumber1} = request.body
         const updateEmployeeDetails = await additionalData.updateOne(
             {gmailId: email},
             {
                 $set: {                      
-                    mobileNumber:mobileNumber1,
-                    skillSet:skillSet2
+                    mobileNumber:mobileNumber1
                 }
             })
             response.status(201).json(updateEmployeeDetails)
@@ -275,11 +274,10 @@ app.post("/getEmployeeAllTasks", async (request,response) =>{
 
 app.put("/updateCreateStatus", async (request,response) =>{
     try {
-        const {idNum,taskId2, completedTime2, status2, empComment2} = request.body
+        const {idNum,taskId2, empComment2} = request.body
         await taskDataBase.updateOne(
             {taskNumber: taskId2}, 
-            {$set: {completeDateTime: completedTime2, 
-                completeStatus: status2, 
+            {$set: {
                 employeeComment: empComment2}
             })
         const getTask = await taskDataBase.find({employeeId:idNum}).toArray()
@@ -344,3 +342,65 @@ app.post("/getOneTask", async (request,response) =>{
         console.log(`Error at getting task based on task num : ${e.message}`)
     }
 })
+
+
+
+app.put("/EmployeeCompleteWorkStatus", async (request,response) =>{
+    try {
+        const {idNum,taskNum,statusTime1,status1} = request.body
+        await taskDataBase.updateOne(
+            { taskNumber: taskNum },
+            {
+                $set: {                      
+                    completeDateTime: statusTime1,
+                    completeStatus: status1          
+                }
+            })
+            const getTask = await taskDataBase.find({employeeId:idNum}).toArray()
+            response.status(201).json(getTask)
+    } catch (e) {
+        console.log(`Error updating employee comment ${e.message}`)
+    }
+})
+
+
+
+app.put("/workAssignedStatus", async (req, res)=>
+    {
+        try{
+                const{taskNumber,assignedStatus,taskAssignedTime,employeeId} = req.body
+                await taskDataBase.updateOne(
+                    {taskNumber: taskNumber},
+                    {$set: {assignedStatus: assignedStatus, taskAssignedTime: taskAssignedTime}}
+                )
+                const getTask = await taskDataBase.find({employeeId: employeeId}).toArray()
+                res.status(201).json(getTask)
+           
+        }
+        catch(err)
+        {
+            console.log(`Error at updating work assigned status : ${err.message}`)
+            res.status(500).json('Error Updating Work Assigned Status')
+        }
+    });
+     
+
+    app.put("/inComplteStatus", async (req, res)=>
+        {
+            try{
+                const {taskNumber, completeStatus, completeDateTime,employeeId} = req.body
+                await taskDataBase.updateOne(
+                    {taskNumber: taskNumber},
+                    {$set: {completeDateTime: completeDateTime, completeStatus: completeStatus}}
+                )
+                const getTask = await taskDataBase.find({employeeId: employeeId}).toArray()
+                    res.status(201).json(getTask)
+               
+            }
+            catch(err)
+            {
+                console.log(`Error at updating complete status : ${err.message}`)
+                res.status(500).json('Error Updating Complete Status')
+            }
+        });
+         

@@ -101,8 +101,7 @@ Content-Type: application/json
 
 {
     "email":"NS00700109@unistechnosoft.com",
-    "mobileNumber1": "7702441016",
-    "skillSet2": "React Native"
+    "mobileNumber1": "7702441016"
 }
 
 ###
