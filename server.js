@@ -7,6 +7,12 @@ const jwt = require("jsonwebtoken")
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
 const path = require('path');
+const socketIo = require('socket.io')
+const http = require("http")
+
+const server = http.createServer(app)
+const io = socketIo(server)
+let users = {}
 
 app.use(express.json());
 app.use(bodyParser.json())
@@ -49,6 +55,18 @@ const authenticateToken = (request, response, next) => {
       });
     }
   };
+
+
+  io.on("connection", (socket) => {
+    console.log("New client connected");
+    socket.on("rigisterUser", (userId) => {
+        users[userId] = socket.id;
+      console.log(`User ${userId} connected registered on ${socket.id}`);
+    });
+    socket.on("disconnect", () => {
+      console.log("Client disconnected");
+    });
+  })
 
 const dataBase = client.db("Task")
 const employeeDatabase = dataBase.collection("Employees Data")
@@ -193,6 +211,12 @@ app.put("/updateTaskAssigned", async (request, response) => {
                     assignedStatus: assignedStatus3
                 }
             })
+            // Notify the employee about the assigned task
+            const employeeSocket = users[employeeId];             
+            if (employeeSocket) {                 
+                io.to(employeeSocket).emit('taskAssigned', idNum);                 
+                console.log(`Task assigned notification sent to employee ${taskNum}`); 
+            }
         const getTask = await taskDataBase.find({employeeId:idNum}).toArray()
         response.status(201).json(getTask)
         
@@ -222,14 +246,33 @@ app.put("/updateTaskAssigned2", async (request,response)=>{
 })
 
 
+const deleteDatabase = dataBase.collection("Deleted Tasks")
 app.delete("/oneTaskDelete", async (request,response) =>{
     try {
         const {idNum, taskNum} = request.body
+        const findTask = await taskDataBase.findOne({taskNumber:taskNum})
+        const deleteTask = await deleteDatabase.insertOne(findTask)
+        const updateDeleteTask = await deleteDatabase.updateOne(
+            {taskNumber:taskNum},
+            {$set:
+                {
+            completeStatus:"Deleted"
+        }})
         const deleteResponse = await taskDataBase.deleteOne({taskNumber:taskNum})
         const getTask = await taskDataBase.find({employeeId:idNum}).toArray()
         response.status(201).json(getTask)
     } catch (e) {
         console.log(`Error at Deleting Task ${e.message}`)
+    }
+})
+
+app.get("/getDeletedTasks", async (request,response) =>{
+    try {
+        const getTask = await deleteDatabase.find().toArray()
+        response.status(201).json(getTask)
+    }
+    catch (error) {
+        response.status(500).send({ message: error.message })
     }
 })
 

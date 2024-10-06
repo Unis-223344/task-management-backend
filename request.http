@@ -148,3 +148,6 @@ Content-Type: application/json
 {
     "taskNum4":"218a078f-36a0-4e8f-ad5f-ee7e022271d1"
 }
+
+###
+GET http://localhost:4000/getDeletedTasks
